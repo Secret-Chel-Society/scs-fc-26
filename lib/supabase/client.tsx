@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createBrowserClient } from "@supabase/ssr"
 import type { User } from "@supabase/supabase-js"
 
 interface SupabaseContextType {
@@ -13,7 +13,12 @@ interface SupabaseContextType {
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined)
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-  const [supabase] = useState(() => createClientComponentClient())
+  const [supabase] = useState(() => 
+    createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+  )
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 

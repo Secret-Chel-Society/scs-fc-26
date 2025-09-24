@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
-import SupabaseProvider from "@/lib/supabase/client"
+import { SupabaseProvider } from "@/lib/supabase/client"
 import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({
