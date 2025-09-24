@@ -35,6 +35,7 @@ import {
   Target,
   Star,
   Zap,
+  Newspaper,
 } from "lucide-react"
 import { useSupabase } from "@/lib/supabase/client"
 
@@ -224,6 +225,153 @@ const Navigation = () => {
                         <div className="text-sm font-medium leading-none">Team Stats</div>
                         <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                           Team performance metrics
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>
+                <Trophy className="mr-2 h-4 w-4" />
+                Awards
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid gap-3 p-6 w-[400px]">
+                  <div className="row-span-3">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        href="/awards"
+                      >
+                        <Trophy className="h-6 w-6" />
+                        <div className="mb-2 mt-4 text-lg font-medium">League Awards</div>
+                        <p className="text-sm leading-tight text-muted-foreground">
+                          Player and team honors
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        href="/awards?category=player"
+                      >
+                        <div className="text-sm font-medium leading-none">Player Awards</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Individual achievements
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        href="/awards?category=team"
+                      >
+                        <div className="text-sm font-medium leading-none">Team Awards</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Team accomplishments
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>
+                <Users className="mr-2 h-4 w-4" />
+                Transfers
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid gap-3 p-6 w-[400px]">
+                  <div className="row-span-3">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        href="/free-agency"
+                      >
+                        <Users className="h-6 w-6" />
+                        <div className="mb-2 mt-4 text-lg font-medium">Free Agency</div>
+                        <p className="text-sm leading-tight text-muted-foreground">
+                          Available players and transfers
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        href="/free-agency?status=available"
+                      >
+                        <div className="text-sm font-medium leading-none">Available</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Players ready to sign
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        href="/free-agency?status=negotiating"
+                      >
+                        <div className="text-sm font-medium leading-none">Negotiating</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Ongoing negotiations
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>
+                <Newspaper className="mr-2 h-4 w-4" />
+                News
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid gap-3 p-6 w-[400px]">
+                  <div className="row-span-3">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                        href="/news"
+                      >
+                        <Newspaper className="h-6 w-6" />
+                        <div className="mb-2 mt-4 text-lg font-medium">Latest News</div>
+                        <p className="text-sm leading-tight text-muted-foreground">
+                          League updates and announcements
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        href="/news?category=transfer"
+                      >
+                        <div className="text-sm font-medium leading-none">Transfers</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Transfer news and rumors
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        href="/news?category=match"
+                      >
+                        <div className="text-sm font-medium leading-none">Matches</div>
+                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          Match reports and analysis
                         </p>
                       </Link>
                     </NavigationMenuLink>
