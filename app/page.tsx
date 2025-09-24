@@ -110,6 +110,18 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchStats() {
+      if (!supabase) {
+        // Use mock data when Supabase is not available
+        setStats({
+          totalPlayers: 1250,
+          totalTeams: 20,
+          totalMatches: 380,
+          activeSeasons: 1,
+        })
+        setLoading(false)
+        return
+      }
+
       try {
         const [playersRes, teamsRes, matchesRes, seasonsRes] = await Promise.all([
           supabase.from("users").select("id", { count: "exact" }),
@@ -126,6 +138,13 @@ export default function Home() {
         })
       } catch (error) {
         console.error("Error fetching stats:", error)
+        // Use mock data on error
+        setStats({
+          totalPlayers: 1250,
+          totalTeams: 20,
+          totalMatches: 380,
+          activeSeasons: 1,
+        })
       } finally {
         setLoading(false)
       }
