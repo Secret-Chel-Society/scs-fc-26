@@ -86,7 +86,7 @@ export default function PlayersPage() {
         if (error) throw error
 
         // Add mock stats for demonstration
-        const playersWithStats = data?.map(player => ({
+        const playersWithStats = data?.map((player: any) => ({
           ...player,
           stats: {
             goals: Math.floor(Math.random() * 30) + 5,
