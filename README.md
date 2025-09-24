@@ -1,4 +1,4 @@
-# FC26 Clubs - Premier EA Sports FC 26 League
+# FC26 Premier League - EA Sports FC 26 Competitive Platform
 
 A modern, competitive football league platform built for EA Sports FC 26 with advanced statistics tracking, team management, and professional tournaments.
 
@@ -27,8 +27,8 @@ A modern, competitive football league platform built for EA Sports FC 26 with ad
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/fc26-clubs.git
-   cd fc26-clubs
+   git clone https://github.com/your-username/fc26-premier-league.git
+   cd fc26-premier-league
    ```
 
 2. **Install dependencies**
@@ -72,9 +72,9 @@ A modern, competitive football league platform built for EA Sports FC 26 with ad
 ### Option 2: Local PostgreSQL
 
 1. Install PostgreSQL
-2. Create a database: `createdb fc26_clubs`
-3. Run: `psql -d fc26_clubs -f schema_supabase.sql`
-4. Optionally run: `psql -d fc26_clubs -f sample_data.sql`
+2. Create a database: `createdb fc26_premier_league`
+3. Run: `psql -d fc26_premier_league -f schema_supabase.sql`
+4. Optionally run: `psql -d fc26_premier_league -f sample_data.sql`
 
 ## 🚀 Deployment
 
@@ -187,4 +187,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**FC26 Clubs** - Where competitive EA Sports FC 26 meets professional league management! ⚽🏆
+**FC26 Premier League** - Where competitive EA Sports FC 26 meets professional league management! ⚽🏆

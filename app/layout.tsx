@@ -14,12 +14,12 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "FC26 Clubs - Premier Football League",
-  description: "The ultimate EA Sports FC 26 competitive football league with advanced statistics, team management, and professional tournaments.",
+  title: "FC26 Premier League - EA Sports FC 26",
+  description: "The premier EA Sports FC 26 competitive football league with advanced statistics, team management, and professional tournaments.",
   keywords: "EA Sports FC 26, Football, Soccer, Competitive Gaming, League, Tournament, Statistics",
-  authors: [{ name: "FC26 Clubs" }],
-  creator: "FC26 Clubs",
-  publisher: "FC26 Clubs",
+  authors: [{ name: "FC26 Premier League" }],
+  creator: "FC26 Premier League",
+  publisher: "FC26 Premier League",
   formatDetection: {
     email: false,
     address: false,
@@ -27,16 +27,16 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL("https://fc26-clubs.vercel.app"),
   openGraph: {
-    title: "FC26 Clubs - Premier Football League",
-    description: "The ultimate EA Sports FC 26 competitive football league",
+    title: "FC26 Premier League - EA Sports FC 26",
+    description: "The premier EA Sports FC 26 competitive football league",
     url: "https://fc26-clubs.vercel.app",
-    siteName: "FC26 Clubs",
+    siteName: "FC26 Premier League",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "FC26 Clubs - Premier Football League",
+        alt: "FC26 Premier League - EA Sports FC 26",
       },
     ],
     locale: "en_US",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FC26 Clubs - Premier Football League",
-    description: "The ultimate EA Sports FC 26 competitive football league",
+    title: "FC26 Premier League - EA Sports FC 26",
+    description: "The premier EA Sports FC 26 competitive football league",
     images: ["/og-image.jpg"],
   },
   robots: {

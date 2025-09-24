@@ -13,7 +13,7 @@ export default function Footer() {
                 <Gamepad2 className="h-5 w-5 text-white" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-trophy bg-clip-text text-transparent">
-                FC26 Clubs
+                FC26 Premier League
               </span>
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -121,7 +121,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-border/40 mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 FC26 Clubs. All rights reserved. Built for EA Sports FC 26 competitive gaming.</p>
+          <p>&copy; 2024 FC26 Premier League. All rights reserved. Built for EA Sports FC 26 competitive gaming.</p>
         </div>
       </div>
     </footer>

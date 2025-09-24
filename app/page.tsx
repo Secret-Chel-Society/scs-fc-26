@@ -153,7 +153,7 @@ export default function Home() {
                 <Gamepad2 className="h-12 w-12 text-white" />
               </motion.div>
               <h1 className="text-6xl font-bold league-title">
-                FC26 Clubs
+                FC26 Premier League
               </h1>
             </div>
             <div className="h-2 w-40 bg-gradient-to-r from-primary to-trophy rounded-full mx-auto mb-8" />
@@ -450,7 +450,7 @@ export default function Home() {
                 >
                   <Link href="/register" className="flex items-center gap-2">
                     <Zap className="h-5 w-5" />
-                    Join FC26 Clubs
+                    Join FC26 Premier League
                   </Link>
                 </Button>
               </motion.div>

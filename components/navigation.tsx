@@ -65,7 +65,7 @@ const Navigation = () => {
             <Gamepad2 className="h-5 w-5 text-white" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-primary to-trophy bg-clip-text text-transparent">
-            FC26 Clubs
+            FC26 Premier League
           </span>
         </Link>
 
