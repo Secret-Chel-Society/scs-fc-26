@@ -73,7 +73,7 @@ export default function TeamsPage() {
         if (error) throw error
 
         // Calculate stats for each team
-        const teamsWithStats = data?.map((team: any, index) => ({
+        const teamsWithStats = data?.map((team: any, index: number) => ({
           ...team,
           position: index + 1,
           wins: Math.floor(Math.random() * 20) + 5, // Mock data
