@@ -29,6 +29,9 @@ import {
   UsersIcon,
   CalendarIcon,
   TrophyIcon,
+  ArrowRight,
+  Play,
+  ChevronRight,
 } from "lucide-react"
 import { useSupabase } from "@/lib/supabase/client"
 
@@ -284,7 +287,7 @@ export default function Home() {
               <Crown className="h-8 w-8 text-white" />
             </div>
             <h2 className="text-4xl font-bold bg-gradient-to-r from-stadium to-stadium-light bg-clip-text text-transparent">
-              Why Choose FC26 Clubs?
+              Why Choose FC26 Premier League?
             </h2>
           </div>
           <div className="h-1 w-32 bg-gradient-to-r from-stadium to-transparent rounded-full mx-auto mb-6" />
