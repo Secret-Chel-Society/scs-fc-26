@@ -68,7 +68,7 @@ export default function StandingsPage() {
         if (error) throw error
 
         // Calculate standings from match data
-        const standingsData = data?.map((team, index) => {
+        const standingsData = data?.map((team: any, index) => {
           const allMatches = [...(team.matches_home || []), ...(team.matches_away || [])]
           const completedMatches = allMatches.filter(m => m.status === "completed")
           
