@@ -32,6 +32,9 @@ import {
   ArrowRight,
   Play,
   ChevronRight,
+  Sparkles,
+  Flame,
+  Sword,
 } from "lucide-react"
 import { useSupabase } from "@/lib/supabase/client"
 
@@ -71,34 +74,7 @@ function AnimatedCounter({ end, duration = 2000, suffix = "" }: { end: number; d
   )
 }
 
-// Floating football background
-function FloatingFootball() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-2 h-2 bg-primary/20 rounded-full"
-          initial={{
-            x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1200),
-            y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 800),
-          }}
-          animate={{
-            x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1200),
-            y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 800),
-          }}
-          transition={{
-            duration: Math.random() * 20 + 15,
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
-export default function Home() {
+export default function HomePage() {
   const { supabase } = useSupabase()
   const [stats, setStats] = useState({
     totalPlayers: 0,
@@ -154,361 +130,287 @@ export default function Home() {
   }, [supabase])
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <FloatingFootball />
-
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Hero Section */}
-      <section className="relative py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        
+        <div className="max-w-7xl mx-auto text-center relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-8"
+            transition={{ duration: 1 }}
+            className="space-y-12"
           >
-            <div className="inline-flex items-center gap-3 mb-6">
+            {/* Logo and Title */}
+            <div className="flex flex-col items-center space-y-6">
               <motion.div
-                className="p-4 bg-gradient-to-r from-primary to-trophy rounded-2xl"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative"
               >
-                <Gamepad2 className="h-12 w-12 text-white" />
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                  <GamepadIcon className="w-12 h-12 text-white" />
+                </div>
+                <div className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                  <TrophyIcon className="w-4 h-4 text-white" />
+                </div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                  <Star className="w-3 h-3 text-white" />
+                </div>
               </motion.div>
-              <h1 className="text-6xl font-bold league-title">
-                FC26 Premier League
-              </h1>
-            </div>
-            <div className="h-2 w-40 bg-gradient-to-r from-primary to-trophy rounded-full mx-auto mb-8" />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-12"
-          >
-            <h2 className="text-3xl font-semibold text-foreground mb-4">
-              Premier EA Sports FC 26 League
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Join the most competitive EA Sports FC 26 football league with professional-grade 
-              statistics tracking, team management, and championship tournaments.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            <Button size="lg" asChild className="bg-gradient-to-r from-primary to-trophy hover:from-primary/90 hover:to-trophy/90">
-              <Link href="/register" className="flex items-center gap-2">
-                <Zap className="h-5 w-5" />
-                Join the League
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/matches" className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                View Matches
-              </Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <motion.section
-        className="relative -mt-20 z-10 mx-4"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="container mx-auto">
-          <Card className="backdrop-blur-md bg-background/90 border-primary/20 shadow-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-trophy/5" />
-            <CardContent className="relative p-8">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-foreground mb-2">League Statistics</h2>
-                <p className="text-muted-foreground">Real-time data from our competitive football league</p>
+              
+              <div className="space-y-4">
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="text-5xl sm:text-6xl lg:text-7xl font-black bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent leading-tight"
+                >
+                  FC26 Premier League
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                  className="text-xl sm:text-2xl text-blue-200 font-medium"
+                >
+                  The Ultimate EA Sports FC 26 Experience
+                </motion.p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            </div>
+
+            {/* Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="max-w-4xl mx-auto space-y-6"
+            >
+              <p className="text-lg sm:text-xl text-gray-300 leading-relaxed">
+                Experience the most competitive EA Sports FC 26 football league with professional-grade statistics tracking, 
+                advanced team management, and thrilling championship tournaments.
+              </p>
+              
+              {/* Feature Pills */}
+              <div className="flex flex-wrap justify-center gap-3 mt-8">
                 {[
-                  {
-                    icon: UsersIcon,
-                    label: "Active Players",
-                    value: stats.totalPlayers,
-                    color: "text-blue-500",
-                    desc: "Registered competitors",
-                  },
-                  {
-                    icon: TrophyIcon,
-                    label: "Teams",
-                    value: stats.totalTeams,
-                    color: "text-green-500",
-                    desc: "Active clubs",
-                  },
-                  {
-                    icon: CalendarIcon,
-                    label: "Matches Played",
-                    value: stats.totalMatches,
-                    color: "text-purple-500",
-                    desc: "Total games tracked",
-                  },
-                  {
-                    icon: Star,
-                    label: "Active Seasons",
-                    value: stats.activeSeasons,
-                    color: "text-orange-500",
-                    desc: "Current competitions",
-                  },
-                ].map((stat, index) => (
+                  "Professional Statistics",
+                  "Team Management", 
+                  "Championship Tournaments",
+                  "Real-time Updates"
+                ].map((feature, index) => (
                   <motion.div
-                    key={stat.label}
-                    className="text-center group cursor-pointer"
-                    initial={{ opacity: 0, scale: 0.5 }}
+                    key={feature}
+                    initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
+                    className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-white text-sm font-medium"
                   >
-                    <motion.div
-                      className={`${stat.color} mb-2 mx-auto w-fit`}
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <stat.icon className="h-8 w-8" />
-                    </motion.div>
-                    <div className="text-3xl font-bold mb-1">
-                      {loading ? "..." : <AnimatedCounter end={stat.value} />}
-                    </div>
-                    <div className="text-sm font-medium mb-1">{stat.label}</div>
-                    <div className="text-xs text-muted-foreground">{stat.desc}</div>
+                    {feature}
                   </motion.div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8"
+            >
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-4 text-lg font-bold shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105"
+              >
+                <Zap className="w-6 h-6 mr-3" />
+                Join the League
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-2 border-white/30 hover:bg-white/10 backdrop-blur-sm px-10 py-4 text-lg font-bold text-white hover:border-white/50 transition-all duration-300"
+              >
+                <Calendar className="w-6 h-6 mr-3" />
+                View Matches
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
-      </motion.section>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-full blur-xl animate-pulse delay-500"></div>
+      </section>
 
-      {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="p-3 bg-gradient-to-r from-stadium to-stadium-light rounded-xl">
-              <Crown className="h-8 w-8 text-white" />
-            </div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-stadium to-stadium-light bg-clip-text text-transparent">
-              Why Choose FC26 Premier League?
+      {/* Stats Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-slate-800/50 to-purple-800/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+              League Statistics
             </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Real-time data from our competitive football league
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { icon: Users, label: "Active Players", value: stats.totalPlayers, color: "from-blue-500 to-cyan-500" },
+              { icon: Trophy, label: "Teams", value: stats.totalTeams, color: "from-purple-500 to-pink-500" },
+              { icon: Calendar, label: "Matches Played", value: stats.totalMatches, color: "from-green-500 to-emerald-500" },
+              { icon: Award, label: "Active Seasons", value: stats.activeSeasons, color: "from-orange-500 to-red-500" },
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300 group">
+                  <CardContent className="p-8 text-center">
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-r ${stat.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <stat.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="text-3xl font-bold text-white mb-2">
+                      <AnimatedCounter end={stat.value} />
+                    </div>
+                    <div className="text-gray-300 font-medium">{stat.label}</div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
-          <div className="h-1 w-32 bg-gradient-to-r from-stadium to-transparent rounded-full mx-auto mb-6" />
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-          >
-            <Card className="h-full border-stadium/20 bg-gradient-to-br from-background to-stadium/5 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-stadium/20 rounded-lg">
-                    <BarChart3 className="h-6 w-6 text-stadium" />
-                  </div>
-                  <CardTitle className="text-xl">Advanced Statistics</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  Our proprietary system tracks every aspect of EA Sports FC 26 gameplay, 
-                  including goals, assists, passes, tackles, and advanced metrics like 
-                  possession and shot accuracy.
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li className="flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-stadium" />
-                    Real-time match statistics
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-stadium" />
-                    Player performance analytics
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <BarChartIcon className="h-4 w-4 text-stadium" />
-                    Historical data tracking
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <Card className="h-full border-trophy/20 bg-gradient-to-br from-background to-trophy/5 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-trophy/20 rounded-lg">
-                    <Users className="h-6 w-6 text-trophy" />
-                  </div>
-                  <CardTitle className="text-xl">Professional Management</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  Complete team management system with transfers, contracts, formations, 
-                  and tactical analysis that creates an authentic football club experience.
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li className="flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-trophy" />
-                    Transfer market system
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-trophy" />
-                    Scheduled seasons
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Award className="h-4 w-4 text-trophy" />
-                    Championship playoffs
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            <Card className="h-full border-primary/20 bg-gradient-to-br from-background to-primary/5 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/20 rounded-lg">
-                    <Globe className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="text-xl">Global Community</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  Join thousands of dedicated EA Sports FC 26 players from around the world 
-                  in a mature, competitive environment with fair play and sportsmanship.
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-primary" />
-                    Active community
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Medal className="h-4 w-4 text-primary" />
-                    Fair competition
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-primary" />
-                    Professional moderation
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <motion.section
-        className="container mx-auto px-4 py-20"
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <Card className="relative bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border-primary/30 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent" />
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-16 translate-x-16" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/10 rounded-full translate-y-12 -translate-x-12" />
-
-          <CardContent className="relative p-12 text-center">
-            <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
-              className="mb-6"
-            >
-              <Trophy className="h-16 w-16 mx-auto text-primary" />
-            </motion.div>
-
-            <h2 className="text-4xl font-bold mb-4 league-title">
-              Ready to Compete?
+      {/* Features Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+              Why Choose FC26 Premier League?
             </h2>
-            <p className="text-xl mb-4 max-w-3xl mx-auto text-muted-foreground">
-              Join the premier EA Sports FC 26 competitive league with professional-grade 
-              statistics tracking, team management, and championship tournaments.
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Experience the most advanced football league management platform
             </p>
-            <p className="text-lg mb-8 max-w-2xl mx-auto text-muted-foreground">
-              Free to join, competitive gameplay, real rewards!
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: BarChart3,
+                title: "Advanced Statistics",
+                description: "Comprehensive player and team analytics with real-time performance tracking",
+                color: "from-blue-500 to-cyan-500"
+              },
+              {
+                icon: Shield,
+                title: "Fair Play System",
+                description: "Anti-cheat measures and fair play policies ensure competitive integrity",
+                color: "from-green-500 to-emerald-500"
+              },
+              {
+                icon: Trophy,
+                title: "Championship Tournaments",
+                description: "Regular tournaments with prizes and recognition for top performers",
+                color: "from-purple-500 to-pink-500"
+              },
+              {
+                icon: Users,
+                title: "Team Management",
+                description: "Advanced team building tools and player transfer systems",
+                color: "from-orange-500 to-red-500"
+              },
+              {
+                icon: Clock,
+                title: "Real-time Updates",
+                description: "Live match tracking and instant notifications for all league activities",
+                color: "from-indigo-500 to-purple-500"
+              },
+              {
+                icon: Globe,
+                title: "Global Community",
+                description: "Connect with players worldwide and participate in international competitions",
+                color: "from-teal-500 to-blue-500"
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300 group h-full">
+                  <CardContent className="p-8">
+                    <div className={`w-12 h-12 mb-6 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <feature.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-4">{feature.title}</h3>
+                    <p className="text-gray-300 leading-relaxed">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold text-white">
+              Ready to Join the League?
+            </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Start your journey in the most competitive EA Sports FC 26 league today
             </p>
-
-            <div className="flex flex-wrap justify-center gap-6">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  size="lg"
-                  asChild
-                  className="bg-gradient-to-r from-primary to-trophy hover:from-primary/90 hover:to-trophy/90 shadow-lg"
-                >
-                  <Link href="/register" className="flex items-center gap-2">
-                    <Zap className="h-5 w-5" />
-                    Join FC26 Premier League
-                  </Link>
-                </Button>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  asChild
-                  className="border-primary/30 hover:bg-primary/10 backdrop-blur-sm bg-transparent"
-                >
-                  <Link href="/matches" className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    View Live Matches
-                  </Link>
-                </Button>
-              </motion.div>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-12 py-4 text-xl font-bold shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105"
+              >
+                <Crown className="w-6 h-6 mr-3" />
+                Join FC26 Premier League
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-2 border-white/30 hover:bg-white/10 backdrop-blur-sm px-12 py-4 text-xl font-bold text-white hover:border-white/50 transition-all duration-300"
+              >
+                <Play className="w-6 h-6 mr-3" />
+                Watch Highlights
+              </Button>
             </div>
-
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">100%</div>
-                <div className="text-sm text-muted-foreground">Free to Play</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">24/7</div>
-                <div className="text-sm text-muted-foreground">Live Statistics</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">Real</div>
-                <div className="text-sm text-muted-foreground">Competition</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.section>
+          </motion.div>
+        </div>
+      </section>
     </div>
   )
 }
