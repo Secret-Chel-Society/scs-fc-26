@@ -100,7 +100,7 @@ export default function TeamsPage() {
     team.abbreviation.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const sortedTeams = [...filteredTeams].sort((a, b) => {
+  const sortedTeams = [...filteredTeams].sort((a: any, b: any) => {
     switch (sortBy) {
       case "points":
         return b.points - a.points

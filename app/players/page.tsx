@@ -116,7 +116,7 @@ export default function PlayersPage() {
     player.team?.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const sortedPlayers = [...filteredPlayers].sort((a, b) => {
+  const sortedPlayers = [...filteredPlayers].sort((a: any, b: any) => {
     switch (sortBy) {
       case "rating":
         return b.stats.rating - a.stats.rating

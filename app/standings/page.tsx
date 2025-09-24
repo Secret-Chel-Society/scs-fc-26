@@ -107,10 +107,10 @@ export default function StandingsPage() {
             form: ["W", "W", "L", "D", "W"], // Mock form data
             last_5_matches: ["W", "W", "L", "D", "W"], // Mock last 5 matches
           }
-        }).sort((a, b) => b.points - a.points || b.goal_difference - a.goal_difference) || []
+        }).sort((a: any, b: any) => b.points - a.points || b.goal_difference - a.goal_difference) || []
 
         // Update positions after sorting
-        const finalStandings = standingsData.map((team, index) => ({
+        const finalStandings = standingsData.map((team: any, index: number) => ({
           ...team,
           position: index + 1
         }))
