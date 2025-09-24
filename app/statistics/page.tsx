@@ -75,7 +75,7 @@ export default function StatisticsPage() {
         ])
 
         const totalMatches = matchesRes.count || 0
-        const totalGoals = matchesRes.data?.reduce((sum, match) => 
+        const totalGoals = matchesRes.data?.reduce((sum: number, match: any) => 
           sum + (match.home_score || 0) + (match.away_score || 0), 0) || 0
         const totalPlayers = playersRes.count || 0
         const totalTeams = teamsRes.count || 0
