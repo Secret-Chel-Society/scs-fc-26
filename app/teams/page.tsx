@@ -1,349 +1,381 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useToast } from "@/components/ui/use-toast"
 import Link from "next/link"
-import {
-  Users,
-  Trophy,
-  Target,
-  TrendingUp,
-  Calendar,
-  MapPin,
-  Star,
-  Crown,
-  Shield,
-  Zap,
-  Award,
-  Activity,
-  BarChart3,
-  Gamepad2,
-  Search,
-  Filter,
-  Plus,
-  Eye,
-  Edit,
-  MoreHorizontal,
-} from "lucide-react"
+import Image from "next/image"
+import { motion } from "framer-motion"
+import { Trophy, Award, Users, Search, MapPin, Calendar, Target } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { useSupabase } from "@/lib/supabase/client"
 
-interface Team {
-  id: string
-  name: string
-  abbreviation: string
-  logo_url?: string
-  primary_color?: string
-  secondary_color?: string
-  founded_year?: number
-  home_stadium?: string
-  manager_name?: string
-  is_active: boolean
-  wins: number
-  losses: number
-  draws: number
-  goals_for: number
-  goals_against: number
-  points: number
-  position: number
-}
-
 export default function TeamsPage() {
+  const { toast } = useToast()
   const { supabase } = useSupabase()
-  const [teams, setTeams] = useState<Team[]>([])
+  const [teams, setTeams] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState<"points" | "name" | "wins">("points")
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     async function fetchTeams() {
+      if (!supabase) {
+        // Use mock data when Supabase is not available
+        setTeams([
+          {
+            id: "1",
+            name: "Manchester United FC",
+            abbreviation: "MUN",
+            logo_url: null,
+            primary_color: "#DA020E",
+            secondary_color: "#FFE500",
+            founded_year: 1878,
+            home_stadium: "Old Trafford",
+            manager_name: "Erik ten Hag",
+            is_active: true,
+            wins: 15,
+            losses: 3,
+            draws: 2,
+            goals_for: 45,
+            goals_against: 18,
+            points: 47,
+            position: 1,
+            players_count: 25,
+            awards: [
+              { id: "1", name: "Premier League Champions", season: "2023-24", type: "championship" },
+              { id: "2", name: "Golden Boot", season: "2023-24", type: "individual" }
+            ]
+          },
+          {
+            id: "2",
+            name: "Liverpool FC",
+            abbreviation: "LIV",
+            logo_url: null,
+            primary_color: "#C8102E",
+            secondary_color: "#F6EB61",
+            founded_year: 1892,
+            home_stadium: "Anfield",
+            manager_name: "Jürgen Klopp",
+            is_active: true,
+            wins: 14,
+            losses: 4,
+            draws: 2,
+            goals_for: 42,
+            goals_against: 20,
+            points: 44,
+            position: 2,
+            players_count: 23,
+            awards: [
+              { id: "3", name: "FA Cup Winners", season: "2023-24", type: "cup" }
+            ]
+          },
+          {
+            id: "3",
+            name: "Arsenal FC",
+            abbreviation: "ARS",
+            logo_url: null,
+            primary_color: "#EF0107",
+            secondary_color: "#FFFFFF",
+            founded_year: 1886,
+            home_stadium: "Emirates Stadium",
+            manager_name: "Mikel Arteta",
+            is_active: true,
+            wins: 13,
+            losses: 5,
+            draws: 2,
+            goals_for: 38,
+            goals_against: 22,
+            points: 41,
+            position: 3,
+            players_count: 24,
+            awards: []
+          },
+          {
+            id: "4",
+            name: "Chelsea FC",
+            abbreviation: "CHE",
+            logo_url: null,
+            primary_color: "#034694",
+            secondary_color: "#FFFFFF",
+            founded_year: 1905,
+            home_stadium: "Stamford Bridge",
+            manager_name: "Mauricio Pochettino",
+            is_active: true,
+            wins: 12,
+            losses: 6,
+            draws: 2,
+            goals_for: 35,
+            goals_against: 25,
+            points: 38,
+            position: 4,
+            players_count: 26,
+            awards: []
+          },
+          {
+            id: "5",
+            name: "Manchester City FC",
+            abbreviation: "MCI",
+            logo_url: null,
+            primary_color: "#6CABDD",
+            secondary_color: "#FFFFFF",
+            founded_year: 1880,
+            home_stadium: "Etihad Stadium",
+            manager_name: "Pep Guardiola",
+            is_active: true,
+            wins: 11,
+            losses: 7,
+            draws: 2,
+            goals_for: 40,
+            goals_against: 28,
+            points: 35,
+            position: 5,
+            players_count: 22,
+            awards: [
+              { id: "4", name: "Champions League Winners", season: "2022-23", type: "championship" }
+            ]
+          },
+          {
+            id: "6",
+            name: "Tottenham Hotspur FC",
+            abbreviation: "TOT",
+            logo_url: null,
+            primary_color: "#132257",
+            secondary_color: "#FFFFFF",
+            founded_year: 1882,
+            home_stadium: "Tottenham Hotspur Stadium",
+            manager_name: "Ange Postecoglou",
+            is_active: true,
+            wins: 10,
+            losses: 8,
+            draws: 2,
+            goals_for: 32,
+            goals_against: 30,
+            points: 32,
+            position: 6,
+            players_count: 21,
+            awards: []
+          }
+        ])
+        setLoading(false)
+        return
+      }
+
       try {
-        const { data, error } = await supabase
+        setLoading(true)
+        
+        // Fetch teams with their statistics
+        const { data: teamsData, error } = await supabase
           .from("teams")
           .select(`
             *,
-            matches_home:matches!home_team_id(count),
-            matches_away:matches!away_team_id(count)
+            players(count),
+            matches_home:wins,
+            matches_away:losses
           `)
           .eq("is_active", true)
-          .order("points", { ascending: false })
+          .order("name")
 
         if (error) throw error
 
-        // Calculate stats for each team
-        const teamsWithStats = data?.map((team: any, index: number) => ({
+        // Transform the data to include calculated stats
+        const teamsWithStats = teamsData?.map((team: any) => ({
           ...team,
-          position: index + 1,
-          wins: Math.floor(Math.random() * 20) + 5, // Mock data
-          losses: Math.floor(Math.random() * 15) + 2,
-          draws: Math.floor(Math.random() * 10) + 1,
+          players_count: team.players?.[0]?.count || 0,
+          wins: Math.floor(Math.random() * 15) + 5, // Mock data for now
+          losses: Math.floor(Math.random() * 10) + 2,
+          draws: Math.floor(Math.random() * 5) + 1,
           goals_for: Math.floor(Math.random() * 50) + 20,
-          goals_against: Math.floor(Math.random() * 40) + 15,
-          points: Math.floor(Math.random() * 60) + 20,
+          goals_against: Math.floor(Math.random() * 30) + 10,
+          points: Math.floor(Math.random() * 50) + 20,
+          position: Math.floor(Math.random() * 20) + 1,
+          awards: [] // Will be populated separately
         })) || []
 
         setTeams(teamsWithStats)
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching teams:", error)
+        toast({
+          title: "Error loading teams",
+          description: error.message || "Failed to load teams data.",
+          variant: "destructive",
+        })
       } finally {
         setLoading(false)
       }
     }
 
     fetchTeams()
-  }, [supabase])
+  }, [supabase, toast])
 
-  const filteredTeams = teams.filter(team =>
-    team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    team.abbreviation.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter teams based on search query
+  const filteredTeams = teams.filter((team) => 
+    team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    team.abbreviation.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const sortedTeams = [...filteredTeams].sort((a: any, b: any) => {
-    switch (sortBy) {
-      case "points":
-        return b.points - a.points
-      case "wins":
-        return b.wins - a.wins
-      case "name":
-        return a.name.localeCompare(b.name)
-      default:
-        return 0
-    }
-  })
-
-  const getPositionColor = (position: number) => {
-    if (position <= 3) return "text-trophy"
-    if (position <= 6) return "text-primary"
-    if (position <= 10) return "text-stadium"
-    return "text-muted-foreground"
-  }
-
-  const getPositionBadge = (position: number) => {
-    if (position === 1) return { icon: Crown, color: "bg-trophy", text: "Champions" }
-    if (position <= 3) return { icon: Trophy, color: "bg-primary", text: "Top 3" }
-    if (position <= 6) return { icon: Star, color: "bg-stadium", text: "Top 6" }
-    return { icon: Shield, color: "bg-muted", text: "League" }
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Header */}
-      <section className="relative py-20 px-4">
-        <div className="container mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-8"
-          >
-            <div className="inline-flex items-center gap-3 mb-6">
-              <motion.div
-                className="p-4 bg-gradient-to-r from-primary to-trophy rounded-2xl"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
-              >
-                <Users className="h-12 w-12 text-white" />
-              </motion.div>
-              <h1 className="text-5xl font-bold league-title">
-                FC26 Teams
-              </h1>
-            </div>
-            <div className="h-2 w-40 bg-gradient-to-r from-primary to-trophy rounded-full mx-auto mb-8" />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-12"
-          >
-            <h2 className="text-3xl font-semibold text-foreground mb-4">
-              Premier League Teams
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Discover all teams competing in the FC26 Premier League. View their statistics, 
-              recent performance, and team management details.
+    <div className="container mx-auto px-4 py-8">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Teams
+            </h1>
+            <p className="text-muted-foreground">
+              All teams competing in the FC26 Premier League
             </p>
-          </motion.div>
+          </div>
 
-          {/* Search and Filter */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-4 mb-8"
-          >
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search teams..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-primary/20 rounded-lg bg-background/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-              />
-            </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as "points" | "name" | "wins")}
-              className="px-4 py-2 border border-primary/20 rounded-lg bg-background/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-            >
-              <option value="points">Sort by Points</option>
-              <option value="wins">Sort by Wins</option>
-              <option value="name">Sort by Name</option>
-            </select>
-            <Button asChild className="bg-gradient-to-r from-primary to-trophy">
-              <Link href="/teams/create" className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Create Team
-              </Link>
-            </Button>
-          </motion.div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search teams..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 max-w-sm"
+            />
+          </div>
         </div>
-      </section>
 
-      {/* Teams Grid */}
-      <section className="container mx-auto px-4 pb-20">
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardHeader>
-                  <div className="h-6 bg-muted rounded w-3/4"></div>
-                  <div className="h-4 bg-muted rounded w-1/2"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="h-4 bg-muted rounded"></div>
-                    <div className="h-4 bg-muted rounded w-5/6"></div>
-                    <div className="h-4 bg-muted rounded w-4/6"></div>
-                  </div>
-                </CardContent>
-              </Card>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(12)].map((_, i) => (
+              <Skeleton key={i} className="h-80 w-full rounded-lg" />
             ))}
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedTeams.map((team, index) => {
-              const positionBadge = getPositionBadge(team.position)
-              return (
-                <motion.div
-                  key={team.id}
-                  initial={{ opacity: 0, y: 30 }}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTeams.map((team, index) => (
+              <Link key={team.id} href={`/teams/${team.id}`}>
+                <motion.div 
+                  whileHover={{ y: -5 }} 
+                  transition={{ type: "spring", stiffness: 300 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -5 }}
                 >
-                  <Card className="h-full border-primary/20 bg-gradient-to-br from-background to-primary/5 hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-3xl" />
-                    
-                    <CardHeader className="relative">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gradient-to-r from-primary to-trophy rounded-xl flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">
-                              {team.abbreviation}
-                            </span>
+                  <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500/50">
+                    <CardContent className="p-6">
+                      {/* Team Header */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <div 
+                            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg"
+                            style={{ 
+                              backgroundColor: team.primary_color || '#3B82F6',
+                              color: team.secondary_color || '#FFFFFF'
+                            }}
+                          >
+                            {team.abbreviation}
                           </div>
                           <div>
-                            <CardTitle className="text-xl">{team.name}</CardTitle>
-                            <p className="text-sm text-muted-foreground">
-                              Founded {team.founded_year || "2024"}
-                            </p>
+                            <h3 className="font-bold text-lg">{team.name}</h3>
+                            <p className="text-sm text-muted-foreground">{team.abbreviation}</p>
                           </div>
                         </div>
-                        <Badge className={`${positionBadge.color} text-white`}>
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                           #{team.position}
                         </Badge>
                       </div>
 
-                      <div className="flex items-center gap-2 mb-4">
-                        <positionBadge.icon className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium">{positionBadge.text}</span>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="relative">
                       {/* Team Stats */}
-                      <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div className="text-center p-3 bg-primary/10 rounded-lg">
-                          <div className="text-2xl font-bold text-primary">{team.points}</div>
-                          <div className="text-xs text-muted-foreground">Points</div>
-                        </div>
-                        <div className="text-center p-3 bg-trophy/10 rounded-lg">
-                          <div className="text-2xl font-bold text-trophy">{team.wins}</div>
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-green-600">{team.wins}</div>
                           <div className="text-xs text-muted-foreground">Wins</div>
                         </div>
-                        <div className="text-center p-3 bg-stadium/10 rounded-lg">
-                          <div className="text-2xl font-bold text-stadium">{team.goals_for}</div>
-                          <div className="text-xs text-muted-foreground">Goals For</div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-red-600">{team.losses}</div>
+                          <div className="text-xs text-muted-foreground">Losses</div>
                         </div>
-                        <div className="text-center p-3 bg-secondary/10 rounded-lg">
-                          <div className="text-2xl font-bold text-secondary">{team.goals_against}</div>
-                          <div className="text-xs text-muted-foreground">Goals Against</div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-yellow-600">{team.draws}</div>
+                          <div className="text-xs text-muted-foreground">Draws</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-blue-600">{team.points}</div>
+                          <div className="text-xs text-muted-foreground">Points</div>
                         </div>
                       </div>
 
                       {/* Team Info */}
-                      <div className="space-y-2 mb-6">
+                      <div className="space-y-2 mb-4">
                         {team.home_stadium && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                            <span>{team.home_stadium}</span>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            {team.home_stadium}
                           </div>
                         )}
                         {team.manager_name && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Crown className="h-4 w-4 text-muted-foreground" />
-                            <span>Manager: {team.manager_name}</span>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <Users className="h-4 w-4 mr-2" />
+                            {team.manager_name}
+                          </div>
+                        )}
+                        {team.founded_year && (
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Founded {team.founded_year}
                           </div>
                         )}
                       </div>
 
-                      {/* Action Buttons */}
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" asChild className="flex-1">
-                          <Link href={`/teams/${team.id}`} className="flex items-center gap-2">
-                            <Eye className="h-4 w-4" />
-                            View Details
-                          </Link>
-                        </Button>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/teams/${team.id}/edit`} className="flex items-center gap-2">
-                            <Edit className="h-4 w-4" />
-                          </Link>
-                        </Button>
+                      {/* Goals */}
+                      <div className="flex justify-between items-center mb-4 p-3 bg-muted/50 rounded-lg">
+                        <div className="text-center">
+                          <div className="font-bold text-green-600">{team.goals_for}</div>
+                          <div className="text-xs text-muted-foreground">Goals For</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-red-600">{team.goals_against}</div>
+                          <div className="text-xs text-muted-foreground">Goals Against</div>
+                        </div>
+                      </div>
+
+                      {/* Awards */}
+                      {team.awards && team.awards.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <Trophy className="h-4 w-4 text-yellow-500" />
+                          <span className="text-sm text-muted-foreground">
+                            {team.awards.length} award{team.awards.length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Players Count */}
+                      <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Users className="h-4 w-4 mr-2" />
+                          {team.players_count} players
+                        </div>
+                        <div className="text-sm font-medium text-blue-600">
+                          View Details →
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 </motion.div>
-              )
-            })}
+              </Link>
+            ))}
           </div>
         )}
 
-        {!loading && sortedTeams.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20"
-          >
-            <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No teams found</h3>
-            <p className="text-muted-foreground mb-6">
-              {searchTerm ? "Try adjusting your search terms" : "No teams have been created yet"}
-            </p>
-            <Button asChild className="bg-gradient-to-r from-primary to-trophy">
-              <Link href="/teams/create" className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Create First Team
-              </Link>
-            </Button>
-          </motion.div>
+        {!loading && filteredTeams.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-muted-foreground mb-4">
+              <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-semibold mb-2">No teams found</h3>
+              <p>Try adjusting your search criteria</p>
+            </div>
+          </div>
         )}
-      </section>
+      </motion.div>
     </div>
   )
 }

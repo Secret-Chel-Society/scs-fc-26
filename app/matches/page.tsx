@@ -1,438 +1,358 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useToast } from "@/components/ui/use-toast"
 import Link from "next/link"
-import {
-  Calendar,
-  Clock,
-  Trophy,
-  Target,
-  Users,
+import { motion } from "framer-motion"
+import { 
+  Calendar, 
+  Clock, 
+  Trophy, 
+  Users, 
+  Target, 
+  Play, 
+  CheckCircle, 
+  AlertCircle,
+  ArrowRight,
   MapPin,
-  Play,
-  Pause,
-  Eye,
-  BarChart3,
-  Filter,
-  Search,
-  Plus,
-  Gamepad2,
-  Star,
-  Award,
-  TrendingUp,
-  Activity,
-  Zap,
-  Crown,
-  Shield,
+  Star
 } from "lucide-react"
 import { useSupabase } from "@/lib/supabase/client"
 
-interface Match {
-  id: string
-  home_team_id: string
-  away_team_id: string
-  home_team: {
-    name: string
-    abbreviation: string
-    logo_url?: string
-  }
-  away_team: {
-    name: string
-    abbreviation: string
-    logo_url?: string
-  }
-  match_date: string
-  status: "scheduled" | "live" | "completed" | "postponed"
-  home_score?: number
-  away_score?: number
-  season_id: string
-  competition_type: string
-  venue?: string
-  referee?: string
-}
-
 export default function MatchesPage() {
+  const { toast } = useToast()
   const { supabase } = useSupabase()
-  const [matches, setMatches] = useState<Match[]>([])
+  const [matches, setMatches] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<"all" | "live" | "upcoming" | "completed">("all")
-  const [searchTerm, setSearchTerm] = useState("")
+  const [activeTab, setActiveTab] = useState("upcoming")
 
   useEffect(() => {
     async function fetchMatches() {
+      if (!supabase) {
+        // Use mock data when Supabase is not available
+        setMatches([
+          {
+            id: "1",
+            home_team: { name: "Manchester United FC", abbreviation: "MUN", logo_url: null },
+            away_team: { name: "Liverpool FC", abbreviation: "LIV", logo_url: null },
+            match_date: "2024-01-15T15:00:00Z",
+            status: "scheduled",
+            home_score: null,
+            away_score: null,
+            venue: "Old Trafford",
+            competition: "Premier League",
+            season: "2023-24"
+          },
+          {
+            id: "2",
+            home_team: { name: "Arsenal FC", abbreviation: "ARS", logo_url: null },
+            away_team: { name: "Chelsea FC", abbreviation: "CHE", logo_url: null },
+            match_date: "2024-01-14T17:30:00Z",
+            status: "completed",
+            home_score: 2,
+            away_score: 1,
+            venue: "Emirates Stadium",
+            competition: "Premier League",
+            season: "2023-24"
+          },
+          {
+            id: "3",
+            home_team: { name: "Manchester City FC", abbreviation: "MCI", logo_url: null },
+            away_team: { name: "Tottenham Hotspur FC", abbreviation: "TOT", logo_url: null },
+            match_date: "2024-01-13T12:00:00Z",
+            status: "completed",
+            home_score: 3,
+            away_score: 0,
+            venue: "Etihad Stadium",
+            competition: "Premier League",
+            season: "2023-24"
+          },
+          {
+            id: "4",
+            home_team: { name: "Liverpool FC", abbreviation: "LIV", logo_url: null },
+            away_team: { name: "Arsenal FC", abbreviation: "ARS", logo_url: null },
+            match_date: "2024-01-20T16:00:00Z",
+            status: "scheduled",
+            home_score: null,
+            away_score: null,
+            venue: "Anfield",
+            competition: "Premier League",
+            season: "2023-24"
+          },
+          {
+            id: "5",
+            home_team: { name: "Chelsea FC", abbreviation: "CHE", logo_url: null },
+            away_team: { name: "Manchester United FC", abbreviation: "MUN", logo_url: null },
+            match_date: "2024-01-19T19:45:00Z",
+            status: "scheduled",
+            home_score: null,
+            away_score: null,
+            venue: "Stamford Bridge",
+            competition: "Premier League",
+            season: "2023-24"
+          }
+        ])
+        setLoading(false)
+        return
+      }
+
       try {
-        const { data, error } = await supabase
+        setLoading(true)
+        
+        // Fetch matches with team information
+        const { data: matchesData, error } = await supabase
           .from("matches")
           .select(`
             *,
-            home_team:teams!home_team_id(name, abbreviation, logo_url),
-            away_team:teams!away_team_id(name, abbreviation, logo_url)
+            home_team:teams!matches_home_team_id_fkey(name, abbreviation, logo_url),
+            away_team:teams!matches_away_team_id_fkey(name, abbreviation, logo_url)
           `)
-          .order("match_date", { ascending: false })
-          .limit(50)
+          .order("match_date", { ascending: true })
 
         if (error) throw error
-        setMatches(data || [])
-      } catch (error) {
+
+        setMatches(matchesData || [])
+      } catch (error: any) {
         console.error("Error fetching matches:", error)
+        toast({
+          title: "Error loading matches",
+          description: error.message || "Failed to load matches data.",
+          variant: "destructive",
+        })
       } finally {
         setLoading(false)
       }
     }
 
     fetchMatches()
-  }, [supabase])
+  }, [supabase, toast])
 
-  const filteredMatches = matches.filter(match => {
-    const matchesSearch = match.home_team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         match.away_team.name.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    switch (filter) {
-      case "live":
-        return match.status === "live" && matchesSearch
-      case "upcoming":
-        return match.status === "scheduled" && matchesSearch
-      case "completed":
-        return match.status === "completed" && matchesSearch
-      default:
-        return matchesSearch
-    }
-  })
+  // Filter matches based on status
+  const upcomingMatches = matches.filter(match => match.status === "scheduled")
+  const completedMatches = matches.filter(match => match.status === "completed")
+  const liveMatches = matches.filter(match => match.status === "live")
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "live": return "bg-red-500"
-      case "completed": return "bg-green-500"
-      case "scheduled": return "bg-blue-500"
-      case "postponed": return "bg-yellow-500"
-      default: return "bg-gray-500"
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "live": return Play
-      case "completed": return Trophy
-      case "scheduled": return Clock
-      case "postponed": return Pause
-      default: return Calendar
-    }
-  }
-
-  const formatMatchDate = (dateString: string) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return {
-      date: date.toLocaleDateString(),
-      time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  }
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "scheduled":
+        return <Badge variant="secondary" className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />Scheduled</Badge>
+      case "live":
+        return <Badge variant="destructive" className="bg-red-100 text-red-800"><Play className="h-3 w-3 mr-1" />Live</Badge>
+      case "completed":
+        return <Badge variant="default" className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>
+      default:
+        return <Badge variant="outline"><AlertCircle className="h-3 w-3 mr-1" />Unknown</Badge>
     }
   }
+
+  const MatchCard = ({ match, index }: { match: any, index: number }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      <Card className="hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500/50">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">
+                {formatDate(match.match_date)}
+              </span>
+            </div>
+            {getStatusBadge(match.status)}
+          </div>
+          {match.venue && (
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4" />
+              <span>{match.venue}</span>
+            </div>
+          )}
+        </CardHeader>
+        
+        <CardContent>
+          <div className="flex items-center justify-between">
+            {/* Home Team */}
+            <div className="flex items-center space-x-3 flex-1">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                {match.home_team.abbreviation}
+              </div>
+              <div>
+                <div className="font-semibold">{match.home_team.name}</div>
+                <div className="text-sm text-muted-foreground">Home</div>
+              </div>
+            </div>
+
+            {/* Score or VS */}
+            <div className="flex items-center space-x-4 mx-6">
+              {match.status === "completed" ? (
+                <div className="text-center">
+                  <div className="text-2xl font-bold">
+                    {match.home_score} - {match.away_score}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Final</div>
+                </div>
+              ) : match.status === "live" ? (
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-red-600">
+                    {match.home_score || 0} - {match.away_score || 0}
+                  </div>
+                  <div className="text-xs text-red-600">Live</div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="text-lg font-semibold text-muted-foreground">VS</div>
+                </div>
+              )}
+            </div>
+
+            {/* Away Team */}
+            <div className="flex items-center space-x-3 flex-1 justify-end">
+              <div>
+                <div className="font-semibold text-right">{match.away_team.name}</div>
+                <div className="text-sm text-muted-foreground text-right">Away</div>
+              </div>
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                {match.away_team.abbreviation}
+              </div>
+            </div>
+          </div>
+
+          {/* Competition */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t">
+            <div className="flex items-center space-x-2">
+              <Trophy className="h-4 w-4 text-yellow-500" />
+              <span className="text-sm font-medium">{match.competition}</span>
+            </div>
+            <Link href={`/matches/${match.id}`}>
+              <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                View Details <ArrowRight className="h-4 w-4 ml-1" />
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Header */}
-      <section className="relative py-20 px-4">
-        <div className="container mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-8"
-          >
-            <div className="inline-flex items-center gap-3 mb-6">
-              <motion.div
-                className="p-4 bg-gradient-to-r from-primary to-trophy rounded-2xl"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
-              >
-                <Calendar className="h-12 w-12 text-white" />
-              </motion.div>
-              <h1 className="text-5xl font-bold league-title">
-                FC26 Matches
-              </h1>
-            </div>
-            <div className="h-2 w-40 bg-gradient-to-r from-primary to-trophy rounded-full mx-auto mb-8" />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-12"
-          >
-            <h2 className="text-3xl font-semibold text-foreground mb-4">
-              Live & Upcoming Matches
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Follow all FC26 Premier League matches in real-time. Watch live games, 
-              check upcoming fixtures, and review match results.
-            </p>
-          </motion.div>
-
-          {/* Filters and Search */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-4 mb-8"
-          >
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search teams..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-primary/20 rounded-lg bg-background/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-              />
-            </div>
-            <div className="flex gap-2">
-              {[
-                { key: "all", label: "All Matches", icon: Calendar },
-                { key: "live", label: "Live", icon: Play },
-                { key: "upcoming", label: "Upcoming", icon: Clock },
-                { key: "completed", label: "Results", icon: Trophy },
-              ].map(({ key, label, icon: Icon }) => (
-                <Button
-                  key={key}
-                  variant={filter === key ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setFilter(key as any)}
-                  className={filter === key ? "bg-gradient-to-r from-primary to-trophy" : ""}
-                >
-                  <Icon className="h-4 w-4 mr-2" />
-                  {label}
-                </Button>
-              ))}
-            </div>
-            <Button asChild className="bg-gradient-to-r from-primary to-trophy">
-              <Link href="/matches/create" className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Schedule Match
-              </Link>
-            </Button>
-          </motion.div>
+    <div className="container mx-auto px-4 py-8">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.5 }}
+      >
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Matches
+          </h1>
+          <p className="text-muted-foreground">
+            All matches in the FC26 Premier League
+          </p>
         </div>
-      </section>
 
-      {/* Live Matches Banner */}
-      {matches.some(m => m.status === "live") && (
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="container mx-auto px-4 mb-8"
-        >
-          <Card className="bg-gradient-to-r from-red-500/20 to-red-600/20 border-red-500/30 overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY }}
-                >
-                  <Play className="h-6 w-6 text-red-500" />
-                </motion.div>
-                <h3 className="text-xl font-bold text-red-500">LIVE MATCHES</h3>
-              </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {matches.filter(m => m.status === "live").slice(0, 3).map((match) => (
-                  <div key={match.id} className="bg-background/50 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-muted-foreground">
-                        {formatMatchDate(match.match_date).time}
-                      </span>
-                      <Badge className="bg-red-500 text-white animate-pulse">
-                        LIVE
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="text-center">
-                        <div className="font-semibold">{match.home_team.name}</div>
-                        <div className="text-2xl font-bold text-primary">{match.home_score || 0}</div>
-                      </div>
-                      <div className="text-muted-foreground">vs</div>
-                      <div className="text-center">
-                        <div className="font-semibold">{match.away_team.name}</div>
-                        <div className="text-2xl font-bold text-primary">{match.away_score || 0}</div>
-                      </div>
-                    </div>
-                  </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="upcoming" className="flex items-center space-x-2">
+              <Clock className="h-4 w-4" />
+              <span>Upcoming</span>
+              <Badge variant="secondary" className="ml-2">{upcomingMatches.length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="live" className="flex items-center space-x-2">
+              <Play className="h-4 w-4" />
+              <span>Live</span>
+              <Badge variant="destructive" className="ml-2">{liveMatches.length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="completed" className="flex items-center space-x-2">
+              <CheckCircle className="h-4 w-4" />
+              <span>Completed</span>
+              <Badge variant="default" className="ml-2">{completedMatches.length}</Badge>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="upcoming" className="mt-6">
+            {loading ? (
+              <div className="space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <Skeleton key={i} className="h-32 w-full rounded-lg" />
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </motion.section>
-      )}
+            ) : upcomingMatches.length > 0 ? (
+              <div className="space-y-4">
+                {upcomingMatches.map((match, index) => (
+                  <MatchCard key={match.id} match={match} index={index} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Clock className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg font-semibold mb-2">No upcoming matches</h3>
+                <p className="text-muted-foreground">Check back later for new fixtures</p>
+              </div>
+            )}
+          </TabsContent>
 
-      {/* Matches Grid */}
-      <section className="container mx-auto px-4 pb-20">
-        {loading ? (
-          <div className="space-y-4">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 bg-muted rounded-full"></div>
-                      <div className="space-y-2">
-                        <div className="h-4 bg-muted rounded w-24"></div>
-                        <div className="h-3 bg-muted rounded w-16"></div>
-                      </div>
-                    </div>
-                    <div className="h-8 bg-muted rounded w-16"></div>
-                    <div className="flex items-center gap-4">
-                      <div className="space-y-2">
-                        <div className="h-3 bg-muted rounded w-16"></div>
-                        <div className="h-4 bg-muted rounded w-24"></div>
-                      </div>
-                      <div className="h-12 w-12 bg-muted rounded-full"></div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredMatches.map((match, index) => {
-              const StatusIcon = getStatusIcon(match.status)
-              const matchDate = formatMatchDate(match.match_date)
-              
-              return (
-                <motion.div
-                  key={match.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -2 }}
-                >
-                  <Card className={`border-primary/20 bg-gradient-to-r from-background to-primary/5 hover:shadow-xl transition-all duration-300 ${
-                    match.status === "live" ? "ring-2 ring-red-500/50" : ""
-                  }`}>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        {/* Home Team */}
-                        <div className="flex items-center gap-4 flex-1">
-                          <div className="w-12 h-12 bg-gradient-to-r from-primary to-trophy rounded-xl flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">
-                              {match.home_team.abbreviation}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="font-semibold text-lg">{match.home_team.name}</div>
-                            <div className="text-sm text-muted-foreground">Home</div>
-                          </div>
-                        </div>
+          <TabsContent value="live" className="mt-6">
+            {loading ? (
+              <div className="space-y-4">
+                {[...Array(2)].map((_, i) => (
+                  <Skeleton key={i} className="h-32 w-full rounded-lg" />
+                ))}
+              </div>
+            ) : liveMatches.length > 0 ? (
+              <div className="space-y-4">
+                {liveMatches.map((match, index) => (
+                  <MatchCard key={match.id} match={match} index={index} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <Play className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg font-semibold mb-2">No live matches</h3>
+                <p className="text-muted-foreground">No matches are currently being played</p>
+              </div>
+            )}
+          </TabsContent>
 
-                        {/* Match Info */}
-                        <div className="flex flex-col items-center gap-2 px-8">
-                          <div className="flex items-center gap-2">
-                            <StatusIcon className={`h-5 w-5 ${getStatusColor(match.status).replace('bg-', 'text-')}`} />
-                            <Badge className={getStatusColor(match.status)}>
-                              {match.status.toUpperCase()}
-                            </Badge>
-                          </div>
-                          
-                          {match.status === "completed" ? (
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-primary mb-1">
-                                {match.home_score} - {match.away_score}
-                              </div>
-                              <div className="text-sm text-muted-foreground">{matchDate.date}</div>
-                            </div>
-                          ) : match.status === "live" ? (
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-red-500 mb-1">
-                                {match.home_score || 0} - {match.away_score || 0}
-                              </div>
-                              <div className="text-sm text-red-500 font-medium">LIVE</div>
-                            </div>
-                          ) : (
-                            <div className="text-center">
-                              <div className="text-lg font-semibold text-muted-foreground mb-1">vs</div>
-                              <div className="text-sm text-muted-foreground">{matchDate.date}</div>
-                              <div className="text-sm text-muted-foreground">{matchDate.time}</div>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Away Team */}
-                        <div className="flex items-center gap-4 flex-1 justify-end">
-                          <div>
-                            <div className="font-semibold text-lg text-right">{match.away_team.name}</div>
-                            <div className="text-sm text-muted-foreground text-right">Away</div>
-                          </div>
-                          <div className="w-12 h-12 bg-gradient-to-r from-trophy to-primary rounded-xl flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">
-                              {match.away_team.abbreviation}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Match Details */}
-                      <div className="mt-4 pt-4 border-t border-primary/10">
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <div className="flex items-center gap-4">
-                            {match.venue && (
-                              <div className="flex items-center gap-1">
-                                <MapPin className="h-4 w-4" />
-                                <span>{match.venue}</span>
-                              </div>
-                            )}
-                            {match.referee && (
-                              <div className="flex items-center gap-1">
-                                <Shield className="h-4 w-4" />
-                                <span>{match.referee}</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm" asChild>
-                              <Link href={`/matches/${match.id}`} className="flex items-center gap-2">
-                                <Eye className="h-4 w-4" />
-                                View Details
-                              </Link>
-                            </Button>
-                            {match.status === "live" && (
-                              <Button size="sm" className="bg-red-500 hover:bg-red-600">
-                                <Play className="h-4 w-4 mr-2" />
-                                Watch Live
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )
-            })}
-          </div>
-        )}
-
-        {!loading && filteredMatches.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20"
-          >
-            <Calendar className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No matches found</h3>
-            <p className="text-muted-foreground mb-6">
-              {searchTerm ? "Try adjusting your search terms" : "No matches have been scheduled yet"}
-            </p>
-            <Button asChild className="bg-gradient-to-r from-primary to-trophy">
-              <Link href="/matches/create" className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Schedule First Match
-              </Link>
-            </Button>
-          </motion.div>
-        )}
-      </section>
+          <TabsContent value="completed" className="mt-6">
+            {loading ? (
+              <div className="space-y-4">
+                {[...Array(10)].map((_, i) => (
+                  <Skeleton key={i} className="h-32 w-full rounded-lg" />
+                ))}
+              </div>
+            ) : completedMatches.length > 0 ? (
+              <div className="space-y-4">
+                {completedMatches.map((match, index) => (
+                  <MatchCard key={match.id} match={match} index={index} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <CheckCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg font-semibold mb-2">No completed matches</h3>
+                <p className="text-muted-foreground">No matches have been completed yet</p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </motion.div>
     </div>
   )
 }
