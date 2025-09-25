@@ -255,10 +255,9 @@ export default function TeamsPage() {
               <Link key={team.id} href={`/teams/${team.id}`}>
                 <motion.div 
                   whileHover={{ y: -5 }} 
-                  transition={{ type: "spring", stiffness: 300 }}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1, type: "spring", stiffness: 300 }}
                 >
                   <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500/50">
                     <CardContent className="p-6">
